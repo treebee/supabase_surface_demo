@@ -12,6 +12,7 @@ defmodule SupabaseSurfaceDemoWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug :fetch_session
   end
 
   scope "/", SupabaseSurfaceDemoWeb do
@@ -21,9 +22,11 @@ defmodule SupabaseSurfaceDemoWeb.Router do
   end
 
   # Other scopes may use custom stacks.
-  # scope "/api", SupabaseSurfaceDemoWeb do
-  #   pipe_through :api
-  # end
+  scope "/", SupabaseSurfaceDemoWeb do
+    pipe_through :api
+
+    post "/session", SessionController, :set_session
+  end
 
   # Enables LiveDashboard only for development
   #

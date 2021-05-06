@@ -7,7 +7,7 @@ defmodule SupabaseSurfaceDemo.MixProject do
       version: "0.1.0",
       elixir: "~> 1.7",
       elixirc_paths: elixirc_paths(Mix.env()),
-      compilers: [:phoenix, :gettext] ++ Mix.compilers(),
+      compilers: [:phoenix, :gettext] ++ Mix.compilers() ++ [:surface],
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps()
@@ -45,6 +45,7 @@ defmodule SupabaseSurfaceDemo.MixProject do
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
       {:surface, "~> 0.4.0"},
+      {:supabase, github: "treebee/supabase-elixir"}
     ]
   end
 

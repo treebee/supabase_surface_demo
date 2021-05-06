@@ -47,6 +47,7 @@ config :supabase_surface_demo, SupabaseSurfaceDemoWeb.Endpoint,
 
 # Watch static and templates for browser reloading.
 config :supabase_surface_demo, SupabaseSurfaceDemoWeb.Endpoint,
+  reloadable_compilers: [:phoenix, :elixir, :surface],
   live_reload: [
     patterns: [
       ~r"priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$",
@@ -54,6 +55,7 @@ config :supabase_surface_demo, SupabaseSurfaceDemoWeb.Endpoint,
       ~r"lib/supabase_surface_demo_web/(live|views)/.*(ex)$",
       ~r"lib/supabase_surface_demo_web/templates/.*(eex)$",
       ~r"lib/supabase_surface_demo_web/live/.*(sface)$",
+      ~r"lib/supabase_surface_demo_web/live/(components)/.*(ex|js)$"
     ]
   ]
 
