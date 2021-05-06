@@ -27,10 +27,6 @@ config :supabase,
   base_url: System.get_env("SUPABASE_URL"),
   api_key: System.get_env("SUPABASE_KEY")
 
-config :gotrue,
-  base_url: System.get_env("SUPABASE_URL") <> "/auth/v1",
-  api_key: System.get_env("SUPABASE_KEY")
-
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env()}.exs"

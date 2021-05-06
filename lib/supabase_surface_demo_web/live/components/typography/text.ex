@@ -4,13 +4,16 @@ defmodule SupabaseSurfaceDemoWeb.Components.Typography.Text do
   @doc "The type (color) of the text"
   prop type, :atom, values: [:default, :success, :danger], default: :default
 
+  @doc "CSS classes to apply"
+  prop class, :css_class
+
   @doc "The content"
   slot default, required: true
 
   @impl true
   def render(assigns) do
     ~H"""
-    <span class={{ text_color(@type) }}><p class="px-1 py-2"><slot /></p></span>
+    <span class={{ text_color(@type) }}><p class={{ @class }}><slot /></p></span>
     """
   end
 

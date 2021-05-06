@@ -1,34 +1,55 @@
 defmodule SupabaseSurfaceDemoWeb.Components.Auth do
   use Surface.LiveComponent
 
+  alias Surface.Components.Link.Button
   alias Surface.Components.Form
   alias Surface.Components.Form.{Field, Label, TextInput, Submit}
   alias SupabaseSurfaceDemoWeb.Components.Typography.Text
+  alias SupabaseSurfaceDemoWeb.Components.Icons.SocialIcon
 
   @doc "URL to redirect to after successful login"
-  prop redirect_url, :string, default: "/"
+  prop(redirect_url, :string, default: "/")
 
   @doc "API endpoint for updating the session with access_token and refresh_token"
-  prop session_url, :string, default: "/session"
+  prop(session_url, :string, default: "/session")
 
   @doc "Classes to apply to the component"
-  prop class, :css_class, default: ""
+  prop(class, :css_class)
 
-  data user, :map, default: %{"email" => ""}
-  data msg, :string, default: nil
-  data type, :atom, values: [:default, :success, :danger], default: :default
+  @doc "If sign in via magic link should be enabled"
+  prop(magic_link, :boolean, default: true)
+
+  @doc "Providers to use for social auth"
+  prop(providers, :list)
+
+  data(user, :map, default: %{"email" => ""})
+  data(msg, :string, default: nil)
+  data(type, :atom, values: [:default, :success, :danger], default: :default)
 
   @impl true
   def render(assigns) do
     ~H"""
     <div
-      id="supabase-auth"
       :hook="SupabaseAuth"
       data-redirect-url="{{ @redirect_url }}"
       data-session-url="{{ @session_url }}"
+      data-magic-link="{{ @magic_link }}"
       class="text-white px-8 py-12 bg-gray-700 border border-gray-600 border-opacity-60 rounded-md {{ @class }}"
       >
-      <Form for={{ :user }} change="change" submit="submit">
+      <div :if={{ @providers }}>
+        <Text class="font-semibold">Sign in with</Text>
+        <div class="pt-2 pb-8">
+          <span :for={{ provider <- @providers }}>
+            <button
+              :on-click="authorize"
+              phx-value-provider={{ provider }}
+              class="my-2 py-2 w-full bg-gray-600 font-semibold text-sm flex items-center justify-center rounded-md">
+              <SocialIcon class="mr-2 w-4 h-4" provider={{ provider }} />Sign up with {{ provider }}
+            </button>
+          </span>
+        </div>
+      </div>
+      <Form :if={{ @magic_link }} for={{ :user }} change="change" submit="submit">
         <Field name="email" class="font-semibold text-md mb-4">
           <Label>Email address</Label>
           <div class="control flex items-center mt-4">
@@ -39,7 +60,7 @@ defmodule SupabaseSurfaceDemoWeb.Components.Auth do
         </Field>
         <Submit class="bg-brand-800 w-full py-2 rounded-md font-semibold text-white">Send Magic Link</Submit>
       </Form>
-      <Text :if={{ @msg }} type={{ @type }}>{{ @msg }}</Text>
+      <Text :if={{ @msg }} type={{ @type }} class="py-2 px-1">{{ @msg }}</Text>
     </div>
     """
   end
@@ -62,4 +83,13 @@ defmodule SupabaseSurfaceDemoWeb.Components.Auth do
 
     {:noreply, assign(socket, :user, %{"email" => ""})}
   end
+
+  @impl true
+  def handle_event("authorize", %{"provider" => provider}, socket) do
+    url = provider_url(provider)
+    {:noreply, redirect(socket, external: url)}
+  end
+
+  defp provider_url(provider),
+    do: Supabase.Connection.new().base_url <> "/auth/v1/authorize?provider=#{provider}"
 end
