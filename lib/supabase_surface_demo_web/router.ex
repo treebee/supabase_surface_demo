@@ -2,32 +2,33 @@ defmodule SupabaseSurfaceDemoWeb.Router do
   use SupabaseSurfaceDemoWeb, :router
 
   pipeline :browser do
-    plug :accepts, ["html"]
-    plug :fetch_session
-    plug :fetch_live_flash
-    plug :put_root_layout, {SupabaseSurfaceDemoWeb.LayoutView, :root}
-    plug :protect_from_forgery
-    plug :put_secure_browser_headers
+    plug(:accepts, ["html"])
+    plug(:fetch_session)
+    plug(:fetch_live_flash)
+    plug(:put_root_layout, {SupabaseSurfaceDemoWeb.LayoutView, :root})
+    plug(:protect_from_forgery)
+    plug(:put_secure_browser_headers)
   end
 
   pipeline :api do
-    plug :accepts, ["json"]
-    plug :fetch_session
+    plug(:accepts, ["json"])
+    plug(:fetch_session)
   end
 
   scope "/", SupabaseSurfaceDemoWeb do
-    pipe_through :browser
+    pipe_through(:browser)
 
-    live "/", PageLive, :index
+    live("/", PageLive, :index)
 
-    post "/logout", SessionController, :logout
+    post("/logout", SessionController, :logout)
+    get("/logout", SessionController, :logout)
   end
 
   # Other scopes may use custom stacks.
   scope "/", SupabaseSurfaceDemoWeb do
-    pipe_through :api
+    pipe_through(:api)
 
-    post "/session", SessionController, :set_session
+    post("/session", SessionController, :set_session)
   end
 
   # Enables LiveDashboard only for development
@@ -41,8 +42,8 @@ defmodule SupabaseSurfaceDemoWeb.Router do
     import Phoenix.LiveDashboard.Router
 
     scope "/" do
-      pipe_through :browser
-      live_dashboard "/dashboard", metrics: SupabaseSurfaceDemoWeb.Telemetry
+      pipe_through(:browser)
+      live_dashboard("/dashboard", metrics: SupabaseSurfaceDemoWeb.Telemetry)
     end
   end
 end

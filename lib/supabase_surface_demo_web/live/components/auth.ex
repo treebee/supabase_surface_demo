@@ -34,7 +34,7 @@ defmodule SupabaseSurfaceDemoWeb.Components.Auth do
       data-redirect-url="{{ @redirect_url }}"
       data-session-url="{{ @session_url }}"
       data-magic-link="{{ @magic_link }}"
-      class="text-white px-8 py-12 bg-gray-700 border border-gray-600 border-opacity-60 rounded-md {{ @class }}"
+      class={{ "text-white px-8 py-12 bg-gray-700 border border-gray-600 border-opacity-60 rounded-md", @class }}
       >
       <div :if={{ @providers }}>
         <Text class="font-semibold">Sign in with</Text>
