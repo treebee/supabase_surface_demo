@@ -7,4 +7,10 @@ defmodule SupabaseSurfaceDemoWeb.SessionController do
     |> put_session(:refresh_token, refresh_token)
     |> json("ok")
   end
+
+  def logout(conn, _params) do
+    conn
+    |> clear_session()
+    |> redirect(to: "/")
+  end
 end

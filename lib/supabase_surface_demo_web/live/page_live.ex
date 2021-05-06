@@ -1,6 +1,8 @@
 defmodule SupabaseSurfaceDemoWeb.PageLive do
   use Surface.LiveView
 
+  alias Surface.Components.Form
+  alias Surface.Components.Form.Submit
   alias SupabaseSurfaceDemoWeb.Components.Auth
 
   data access_token, :string, default: nil
@@ -20,10 +22,13 @@ defmodule SupabaseSurfaceDemoWeb.PageLive do
   def render(assigns) do
     ~H"""
     <div class="">
-      <h1>Hello Surface</h1>
-      <Auth :if={{ is_nil(@access_token) }} id="supabase-auth" redirect_url="/" />
+      <Auth :if={{ is_nil(@access_token) }} id="supabase-auth" redirect_url="/" class="md:max-w-2xl mx-auto" />
       <div :if={{ @access_token }}>
+      <h1>Hello Surface</h1>
       logged in
+      <Form method="post" action="/logout">
+        <Submit class="bg-brand-800 w-full py-2 rounded-md font-semibold text-white">Logout</Submit>
+      </Form>
       </div>
     </div>
     """

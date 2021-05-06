@@ -19,6 +19,8 @@ defmodule SupabaseSurfaceDemoWeb.Router do
     pipe_through :browser
 
     live "/", PageLive, :index
+
+    post "/logout", SessionController, :logout
   end
 
   # Other scopes may use custom stacks.
