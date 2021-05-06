@@ -40,7 +40,7 @@ defmodule SupabaseSurfaceDemoWeb.Components.Auth do
 
   @impl true
   def handle_event("submit", %{"user" => %{"email" => email}}, socket) do
-    IO.inspect(email)
+    :ok = Supabase.auth().send_magic_link(email)
     {:noreply, assign(socket, :user, %{"email" => ""})}
   end
 end

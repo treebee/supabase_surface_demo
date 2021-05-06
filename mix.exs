@@ -45,7 +45,7 @@ defmodule SupabaseSurfaceDemo.MixProject do
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
       {:surface, "~> 0.4.0"},
-      {:supabase, github: "treebee/supabase-elixir"}
+      {:supabase, github: "treebee/supabase-elixir", override: true}
     ]
   end
 

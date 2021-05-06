@@ -2,7 +2,6 @@ defmodule SupabaseSurfaceDemoWeb.PageLive do
   use Surface.LiveView
 
   alias SupabaseSurfaceDemoWeb.Components.Auth
-  alias SupabaseSurfaceDemoWeb.Components.Button
 
   data access_token, :string, default: nil
   data refresh_token, :string, default: nil
@@ -20,8 +19,7 @@ defmodule SupabaseSurfaceDemoWeb.PageLive do
   @impl true
   def render(assigns) do
     ~H"""
-
-    <div >
+    <div class="">
       <h1>Hello Surface</h1>
       <Auth :if={{ is_nil(@access_token) }} id="supabase-auth" redirect_url="/" />
       <div :if={{ @access_token }}>
