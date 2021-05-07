@@ -26,6 +26,7 @@ defmodule SupabaseSurfaceDemo.MixProject do
 
   # Specifies which paths to compile per environment.
   defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(:dev), do: ["lib"] ++ catalogues()
   defp elixirc_paths(_), do: ["lib"]
 
   # Specifies your project dependencies.
@@ -46,7 +47,8 @@ defmodule SupabaseSurfaceDemo.MixProject do
       {:plug_cowboy, "~> 2.0"},
       {:surface, "~> 0.4.0"},
       {:supabase, github: "treebee/supabase-elixir", override: true},
-      {:heroicons, "~> 0.2.2"}
+      {:heroicons, "~> 0.2.2"},
+      {:surface_catalogue, "~> 0.0.8", only: [:dev, :test]}
     ]
   end
 
@@ -59,6 +61,13 @@ defmodule SupabaseSurfaceDemo.MixProject do
   defp aliases do
     [
       setup: ["deps.get", "cmd npm install --prefix assets"]
+    ]
+  end
+
+  defp catalogues() do
+    [
+      # Local catalogue
+      "priv/catalogue"
     ]
   end
 end

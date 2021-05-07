@@ -1,8 +1,6 @@
 defmodule SupabaseSurfaceDemoWeb.PageLive do
   use Surface.LiveView
 
-  alias Surface.Components.Form
-  alias Surface.Components.Form.Submit
   alias SupabaseSurfaceDemoWeb.Components.Auth
   alias SupabaseSurfaceDemoWeb.Components.Profile
 
@@ -39,6 +37,7 @@ defmodule SupabaseSurfaceDemoWeb.PageLive do
           assign(socket, :profile, Map.put(profile, "email", user["email"]))
       end
 
+    IO.inspect(at, rt)
     {:ok, assign(socket, access_token: at, refresh_token: rt)}
   end
 
@@ -75,13 +74,16 @@ defmodule SupabaseSurfaceDemoWeb.PageLive do
   end
 
   defp fetch_profile(access_token, user_id) do
-    %{body: [profile]} =
+    profile_response =
       Supabase.init(access_token: access_token)
       |> Postgrestex.from("profiles")
       |> Postgrestex.eq("id", user_id)
       |> Postgrestex.call()
       |> Supabase.json()
 
-    profile
+    case profile_response do
+      %{body: [profile]} -> profile
+      _ -> []
+    end
   end
 end

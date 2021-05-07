@@ -55,7 +55,8 @@ config :supabase_surface_demo, SupabaseSurfaceDemoWeb.Endpoint,
       ~r"lib/supabase_surface_demo_web/(live|views)/.*(ex)$",
       ~r"lib/supabase_surface_demo_web/templates/.*(eex)$",
       ~r"lib/supabase_surface_demo_web/live/.*(sface)$",
-      ~r"lib/supabase_surface_demo_web/live/(components)/.*(ex|js)$"
+      ~r"lib/supabase_surface_demo_web/live/(components)/.*(ex|js)$",
+      ~r"priv/catalogue/(components)/.*(ex)$"
     ]
   ]
 

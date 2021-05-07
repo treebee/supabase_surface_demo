@@ -1,7 +1,6 @@
 defmodule SupabaseSurfaceDemoWeb.Components.Auth do
   use Surface.LiveComponent
 
-  alias Surface.Components.Link.Button
   alias Surface.Components.Form
   alias Surface.Components.Form.{Field, Label, TextInput, Submit}
   alias SupabaseSurfaceDemoWeb.Components.Typography.Text
