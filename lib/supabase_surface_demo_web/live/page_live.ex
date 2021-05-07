@@ -66,8 +66,7 @@ defmodule SupabaseSurfaceDemoWeb.PageLive do
   end
 
   defp fetch_user(access_token) do
-    case Supabase.Connection.new()
-         |> Supabase.Auth.GoTrue.user(access_token) do
+    case Supabase.Connection.new() |> Supabase.Auth.GoTrue.user(access_token) do
       {:ok, user} -> user
       {:error, %{"code" => 401}} -> :error
     end
