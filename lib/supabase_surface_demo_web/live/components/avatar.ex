@@ -16,7 +16,7 @@ defmodule SupabaseSurfaceDemoWeb.Components.Avatar do
       class={{ "grid grid-cols-1 gap-1 mx-auto", @class }}
     >
       <img
-        class={{ "rounded rounded-full", "h-64 w-64": not user_avatar?(@profile), "h-32 w-32": user_avatar?(@profile) }}
+        class={{ "rounded rounded-full border-gray-700", "h-64 w-64": not user_avatar?(@profile), "h-32 w-32": user_avatar?(@profile) }}
         src={{ Map.get(@profile, "user_avatar") }} />
       <div
         :if={{ not user_avatar?(@profile) }}
@@ -46,7 +46,6 @@ defmodule SupabaseSurfaceDemoWeb.Components.Avatar do
     |> Postgrestex.from("profiles")
     |> Postgrestex.update(%{"avatar_url" => filename})
     |> Postgrestex.call()
-    |> IO.inspect()
 
     {:noreply,
      socket
@@ -63,6 +62,8 @@ defmodule SupabaseSurfaceDemoWeb.Components.Avatar do
     conn = Supabase.Connection.new()
     URI.merge(conn.base_url, "/storage/v1/object/avatars/#{avatar_url}") |> URI.to_string()
   end
+
+  defp get_avatar_url(_), do: ""
 
   def user_avatar?(profile) do
     not is_nil(Map.get(profile, "user_avatar"))
