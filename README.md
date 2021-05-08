@@ -1,19 +1,14 @@
 # SupabaseSurfaceDemo
 
+This is a demo of using [Surface](https://github.com/surface-ui/surface) with Supabase.
+Mostly it's a playground for myself to get more familiar with Surface and Supabase and maybe end
+up with a bunch of reusable components for rapid future development.
+
 To start your Phoenix server:
 
-  * Install dependencies with `mix deps.get`
-  * Install Node.js dependencies with `npm install` inside the `assets` directory
-  * Start Phoenix endpoint with `mix phx.server`
-
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
-
-Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
-
-## Learn more
-
-  * Official website: https://www.phoenixframework.org/
-  * Guides: https://hexdocs.pm/phoenix/overview.html
-  * Docs: https://hexdocs.pm/phoenix
-  * Forum: https://elixirforum.com/c/phoenix-forum
-  * Source: https://github.com/phoenixframework/phoenix
+- Install dependencies with `mix deps.get`
+- Install Node.js dependencies with `npm install` inside the `assets` directory
+- Create and configure a Supabase project like done [here](https://github.com/supabase/supabase/tree/master/examples/nextjs-ts-user-management#build-from-scratch)
+  - make sure the configured app url in the Authentication section is `http://localhost:4000` (or however you will start your Phoenix server)
+- Set `SUPABASE_KEY` and `SUPABASE_URL` environment variables
+- Start Phoenix endpoint with `mix phx.server`
