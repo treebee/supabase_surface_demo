@@ -72,10 +72,9 @@ defmodule SupabaseSurfaceDemoWeb.Components.Auth do
   @impl true
   def handle_event("submit", %{"user" => %{"email" => email}}, socket) do
     socket =
-      case Supabase.Connection.new()
-           |> Supabase.Auth.GoTrue.send_magic_link_email(email)
-           |> IO.inspect() do
-        {:ok, _} -> assign(socket, msg: "Check your emails for magic link")
+      case Supabase.auth()
+           |> GoTrue.send_magic_link(email) do
+        {:ok, _} -> assign(socket, msg: "Check your emails for a magic link", type: :default)
         {:error, %{"code" => 422, "msg" => msg}} -> assign(socket, msg: msg, type: :danger)
         _ -> assign(socket, msg: "Something went wrong. Please try again.", type: :danger)
       end
