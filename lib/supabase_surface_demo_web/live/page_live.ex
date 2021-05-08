@@ -7,9 +7,10 @@ defmodule SupabaseSurfaceDemoWeb.PageLive do
   data user, :map, default: nil
   data access_token, :string, default: nil
   data refresh_token, :string, default: nil
+  data error, :string, default: ""
 
   @impl true
-  def mount(_params, %{"access_token" => access_token, "refresh_token" => refresh_token}, socket) do
+  def mount(params, %{"access_token" => access_token, "refresh_token" => refresh_token}, socket) do
     socket =
       with {:ok, socket, access_token} <-
              check_token_expiration(access_token, refresh_token, socket),
@@ -27,6 +28,11 @@ defmodule SupabaseSurfaceDemoWeb.PageLive do
   end
 
   @impl true
+  def mount(%{"error" => "access_denied", "error_description" => error}, _session, socket) do
+    {:ok, assign(socket, :error, error)}
+  end
+
+  @impl true
   def mount(_params, _session, socket) do
     {:ok, socket}
   end
@@ -35,6 +41,7 @@ defmodule SupabaseSurfaceDemoWeb.PageLive do
   def render(assigns) do
     ~H"""
     <div class="">
+      <p :if={{ @error }} class="text-red-500 font-semibold text-center">{{ @error }}</p>
       <Auth
         :if={{ is_nil(@access_token) }}
         id="supabase-auth"
@@ -55,7 +62,7 @@ defmodule SupabaseSurfaceDemoWeb.PageLive do
   end
 
   defp fetch_user(access_token) do
-    Supabase.auth() |> GoTrue.get_user(access_token) |> IO.inspect()
+    Supabase.auth() |> GoTrue.get_user(access_token)
   end
 
   defp fetch_user(access_token, socket) do
@@ -99,12 +106,12 @@ defmodule SupabaseSurfaceDemoWeb.PageLive do
   end
 
   defp check_token_expiration(access_token, refresh_token, socket) do
-    {:ok, %{"exp" => exp}} = Joken.peek_claims(access_token) |> IO.inspect()
+    {:ok, %{"exp" => exp}} = Joken.peek_claims(access_token)
 
     cond do
       exp - System.system_time(:second) < 10 ->
         with {:ok, access_token, refresh_token} <-
-               refresh_access_token(refresh_token) |> IO.inspect() do
+               refresh_access_token(refresh_token) do
           {:ok, assign(socket, access_token: access_token, refresh_token: refresh_token),
            access_token}
         else

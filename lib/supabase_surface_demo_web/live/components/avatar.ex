@@ -7,6 +7,8 @@ defmodule SupabaseSurfaceDemoWeb.Components.Avatar do
 
   prop class, :css_class
 
+  # TODO fix upload
+
   @impl true
   def render(assigns) do
     ~H"""

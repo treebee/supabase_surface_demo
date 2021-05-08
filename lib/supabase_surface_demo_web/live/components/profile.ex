@@ -25,7 +25,7 @@ defmodule SupabaseSurfaceDemoWeb.Components.Profile do
       <div class={{ "grid grid-cols-1 md:grid-cols-2 gap-16 text-white px-8 py-6 bg-gray-700 border border-gray-600 border-opacity-60 rounded-md", @class }}>
         <div class="order-last md:order-first">
         <Form for={{ :profile }} change="change" submit="submit"
-          class="py-4">
+          >
           <Field name="email" class="font-semibold text-md mb-4">
             <Label>Email address</Label>
             <div class="flex items-center mt-2">
@@ -77,14 +77,15 @@ defmodule SupabaseSurfaceDemoWeb.Components.Profile do
       |> Postgrestex.eq("id", socket.assigns.profile["id"])
       |> Postgrestex.update(Map.delete(profile, "email"))
       |> Postgrestex.call()
+      |> Supabase.json()
 
     case resp do
       # TODO handle error
       :error ->
         {:noreply, socket}
 
-      %{body: profile} ->
-        {:noreply, assign(socket, profile: Map.put(profile, "id", socket.assigns.profile["id"]))}
+      %{body: [profile]} ->
+        {:noreply, assign(socket, profile: Map.merge(socket.assigns.profile, profile))}
     end
   end
 end
