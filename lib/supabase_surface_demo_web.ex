@@ -51,6 +51,15 @@ defmodule SupabaseSurfaceDemoWeb do
     end
   end
 
+  def surface_view do
+    quote do
+      use Surface.LiveView,
+        layout: {SupabaseSurfaceDemoWeb.LayoutView, "live.html"}
+
+      unquote(view_helpers())
+    end
+  end
+
   def live_component do
     quote do
       use Phoenix.LiveComponent

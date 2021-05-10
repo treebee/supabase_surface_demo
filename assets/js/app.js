@@ -16,7 +16,7 @@ import "phoenix_html";
 import { Socket } from "phoenix";
 import topbar from "topbar";
 import { LiveSocket } from "phoenix_live_view";
-import Hooks from "./_hooks";
+import { Hooks } from "supabase_surface";
 
 let csrfToken = document
   .querySelector("meta[name='csrf-token']")

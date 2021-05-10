@@ -4,10 +4,8 @@ defmodule SupabaseSurfaceDemoWeb.Components.Profile do
   alias Surface.Components.Form
   alias Surface.Components.Form.{Field, TextInput, Submit, Label}
 
-  alias SupabaseSurfaceDemoWeb.Components.Avatar
-
   @doc "The profile data to display"
-  prop(profile, :map, required: true)
+  prop(user, :map, required: true)
 
   @doc "CSS classes to pass to the outer HTML element"
   prop(class, :css_class, required: false)
@@ -21,8 +19,8 @@ defmodule SupabaseSurfaceDemoWeb.Components.Profile do
   def render(assigns) do
     ~H"""
     <div class={{ @class }}>
-      <h2 class="text-2xl font-bold text-green-500">Hi {{ Map.get(@profile, "username") }}</h2>
-      <div class={{ "grid grid-cols-1 md:grid-cols-2 gap-16 text-white px-8 py-6 bg-gray-700 border border-gray-600 border-opacity-60 rounded-md", @class }}>
+      <h1 class="text-brand-800 text-lg font-semibold">Hi {{ username(@user) }}</h1>
+      <div class={{ "grid grid-cols-1 md:grid-cols-2 gap-16 text-white my-4 px-8 py-6 bg-gray-700 border border-gray-600 border-opacity-60 rounded-md", @class }}>
         <div class="order-last md:order-first">
         <Form for={{ :profile }} change="change" submit="submit"
           >
@@ -30,7 +28,7 @@ defmodule SupabaseSurfaceDemoWeb.Components.Profile do
             <Label>Email address</Label>
             <div class="flex items-center mt-2">
               <TextInput
-                value="{{ @profile["email"] }}"
+                value="{{ @user["email"] }}"
                 opts={{ readonly: true }}
                 class="text-xs px-4 py-2 text-gray-400 bg-transparent border border-gray-400 rounded-md w-full" />
             </div>
@@ -39,14 +37,14 @@ defmodule SupabaseSurfaceDemoWeb.Components.Profile do
             <Label>Username</Label>
             <div class="flex items-center mt-2">
               <TextInput
-                value="{{ @profile["username"] }}" class="placeholder-gray-400 text-xs px-4 py-2 bg-transparent border border-gray-400 rounded-md w-full" />
+                value="{{ username(@user) }}" class="placeholder-gray-400 text-xs px-4 py-2 bg-transparent border border-gray-400 rounded-md w-full" />
             </div>
           </Field>
           <Field name="website" class="font-semibold text-md mb-4">
             <Label>Website</Label>
             <div class="flex items-center mt-2">
               <TextInput
-                value="{{ @profile["website"] }}" opts={{ placeholder: "Your website" }} class="placeholder-gray-400 text-xs px-4 py-2 bg-transparent border border-gray-400 rounded-md w-full" />
+                value="{{ nil }}" opts={{ placeholder: "Your website" }} class="placeholder-gray-400 text-xs px-4 py-2 bg-transparent border border-gray-400 rounded-md w-full" />
             </div>
           </Field>
 
@@ -56,9 +54,6 @@ defmodule SupabaseSurfaceDemoWeb.Components.Profile do
           <Submit class="border-2 border-brand-800 hover:bg-gray-900 w-full mt-8 py-2 rounded-md font-semibold text-white">Logout</Submit>
         </Form>
         </div>
-        <Avatar id="avatar" access_token={{ @access_token }} profile={{ @profile }}
-          class="items-center"
-        />
       </div>
     </div>
     """
@@ -87,5 +82,9 @@ defmodule SupabaseSurfaceDemoWeb.Components.Profile do
       %{body: [profile]} ->
         {:noreply, assign(socket, profile: Map.merge(socket.assigns.profile, profile))}
     end
+  end
+
+  defp username(user) do
+    user["user_metadata"]["full_name"]
   end
 end

@@ -9,6 +9,7 @@ defmodule SupabaseSurfaceDemoWeb.Router do
     plug(:put_root_layout, {SupabaseSurfaceDemoWeb.LayoutView, :root})
     plug(:protect_from_forgery)
     plug(:put_secure_browser_headers)
+    plug SupabaseSurfaceWeb.Plugs.Session
   end
 
   pipeline :api do
@@ -20,9 +21,9 @@ defmodule SupabaseSurfaceDemoWeb.Router do
     pipe_through(:browser)
 
     live("/", PageLive, :index)
+    live("/login", LoginLive, :index)
 
     post("/logout", SessionController, :logout)
-    get("/logout", SessionController, :logout)
   end
 
   # Other scopes may use custom stacks.

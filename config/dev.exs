@@ -7,7 +7,7 @@ use Mix.Config
 # watchers to your application. For example, we use it
 # with webpack to recompile .js and .css sources.
 config :supabase_surface_demo, SupabaseSurfaceDemoWeb.Endpoint,
-  http: [port: 4000],
+  http: [port: 4004],
   debug_errors: true,
   code_reloader: true,
   check_origin: false,
@@ -56,7 +56,10 @@ config :supabase_surface_demo, SupabaseSurfaceDemoWeb.Endpoint,
       ~r"lib/supabase_surface_demo_web/templates/.*(eex)$",
       ~r"lib/supabase_surface_demo_web/live/.*(sface)$",
       ~r"lib/supabase_surface_demo_web/live/(components)/.*(ex|js)$",
-      ~r"priv/catalogue/(components)/.*(ex)$"
+      ~r"priv/catalogue/(components)/.*(ex)$",
+      ~r"deps/supabase_surface/lib/components/.*(ex|js)$",
+      ~r"deps/supabase_surface/assets/js/.*(js)$",
+      ~r"deps/supabase_surface/assets/css/.*(scss|css)$"
     ]
   ]
 

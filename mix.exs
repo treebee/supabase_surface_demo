@@ -34,7 +34,7 @@ defmodule SupabaseSurfaceDemo.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.5.8"},
+      {:phoenix, "~> 1.5.9"},
       {:phoenix_live_view, "~> 0.15.1"},
       {:floki, ">= 0.27.0", only: :test},
       {:phoenix_html, "~> 2.11"},
@@ -46,8 +46,9 @@ defmodule SupabaseSurfaceDemo.MixProject do
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
       {:surface, "~> 0.4.0"},
-      {:supabase,
-       github: "treebee/supabase-elixir", ref: "7260241db43a6dfab588c1034035227031f90deb"},
+      {:supabase, github: "treebee/supabase-elixir"},
+      # {:supabase_surface, github: "treebee/supabase-surface"},
+      {:supabase_surface, path: "../supabase_surface"},
       {:gotrue, "~> 0.2.0", override: true},
       {:heroicons, "~> 0.2.2"},
       {:surface_catalogue, "~> 0.0.8", only: [:dev, :test]},
