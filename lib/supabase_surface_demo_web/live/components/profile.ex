@@ -2,18 +2,37 @@ defmodule SupabaseSurfaceDemoWeb.Components.Profile do
   use Surface.LiveComponent
 
   alias Surface.Components.Form
-  alias Surface.Components.Form.{Field, TextInput, Submit, Label}
+  alias Surface.Components.Form.{Field, TextInput, Label}
+  alias SupabaseSurface.Components.Button
+  alias SupabaseSurfaceDemo.Accounts
 
   @doc "The profile data to display"
   prop(user, :map, required: true)
 
   @doc "CSS classes to pass to the outer HTML element"
-  prop(class, :css_class, required: false)
+  prop(class, :css_class, default: "")
 
   @doc "Access Token of the currently logged in user."
   prop(access_token, :string, required: true)
 
   data avatar_url, :string, default: ""
+
+  @impl true
+  def update(assigns, socket) do
+    socket =
+      case Accounts.get_profile(assigns.access_token, assigns.user["id"]) do
+        {:ok, profile} ->
+          assign(socket, profile: profile)
+
+        {:error, :no_result} ->
+          assign(socket, profile: Accounts.create_profile(assigns.access_token, assigns.user))
+
+        _error ->
+          put_flash(socket, :danger, "Couldn't fetch profile")
+      end
+
+    {:ok, assign(socket, assigns)}
+  end
 
   @impl true
   def render(assigns) do
@@ -48,11 +67,14 @@ defmodule SupabaseSurfaceDemoWeb.Components.Profile do
             </div>
           </Field>
 
-          <Submit class="bg-brand-800 hover:bg-brand-900 w-full py-2 rounded-md font-semibold text-white uppercase">update</Submit>
+          <Button
+            html_type="submit" block={{ true }} size="small"
+            class="rounded-md font-semibold uppercase mt-6">update</Button>
         </Form>
-        <Form for={{ :logout }} method="post" action="/logout">
-          <Submit class="border-2 border-brand-800 hover:bg-gray-900 w-full mt-8 py-2 rounded-md font-semibold text-white">Logout</Submit>
-        </Form>
+        <div class="mt-8">
+          <Button block={{ true }} type="outline" size="small" to="/logout"
+            class="rounded-md text-white">Logout</Button>
+        </div>
         </div>
       </div>
     </div>
