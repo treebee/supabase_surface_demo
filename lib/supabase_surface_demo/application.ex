@@ -7,6 +7,7 @@ defmodule SupabaseSurfaceDemo.Application do
 
   def start(_type, _args) do
     children = [
+      SupabaseSurfaceDemo.Repo,
       # Start the Telemetry supervisor
       SupabaseSurfaceDemoWeb.Telemetry,
       # Start the PubSub system

@@ -7,6 +7,15 @@
 # General application configuration
 use Mix.Config
 
+config :supabase_surface_demo,
+  ecto_repos: [SupabaseSurfaceDemo.Repo]
+
+config :supabase_surface_demo, SupabaseSurfaceDemo.Repo,
+  database: System.get_env("POSTGRES_DB", "supabase_surface_demo_dev"),
+  username: "postgres",
+  password: System.get_env("POSTGRES_PASSWORD", "postgres"),
+  hostname: System.get_env("POSTGRES_HOST", "localhost")
+
 # Configures the endpoint
 config :supabase_surface_demo, SupabaseSurfaceDemoWeb.Endpoint,
   url: [host: "localhost"],
