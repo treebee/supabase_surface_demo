@@ -1,6 +1,5 @@
 defmodule SupabaseSurfaceDemoWeb.Router do
   use SupabaseSurfaceDemoWeb, :router
-  import Surface.Catalogue.Router
 
   pipeline :browser do
     plug(:accepts, ["html"])
@@ -31,13 +30,6 @@ defmodule SupabaseSurfaceDemoWeb.Router do
     pipe_through(:api)
 
     post("/session", SessionController, :set_session)
-  end
-
-  if Mix.env() == :dev do
-    scope "/" do
-      pipe_through :browser
-      surface_catalogue("/catalogue")
-    end
   end
 
   # Enables LiveDashboard only for development
