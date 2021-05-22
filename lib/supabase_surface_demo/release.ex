@@ -3,7 +3,7 @@ defmodule SupabaseSurfaceDemo.Release do
   Used for executing DB release tasks when run in production without Mix
   installed.
   """
-  @app :hello_elixir
+  @app :supabase_surface_demo
 
   def migrate do
     load_app()
