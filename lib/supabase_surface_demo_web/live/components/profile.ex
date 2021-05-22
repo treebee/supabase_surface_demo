@@ -85,23 +85,16 @@ defmodule SupabaseSurfaceDemoWeb.Components.Profile do
 
   @impl true
   def handle_event("submit", params, socket) do
-    changeset = Profile.changeset(socket.assigns.profile, params)
-
-    resp =
-      Supabase.init(access_token: socket.assigns.access_token)
-      |> Postgrestex.from("profiles")
-      |> Postgrestex.eq("user_id", socket.assigns.user["id"])
-      |> Postgrestex.update(changeset.changes)
-      |> Postgrestex.call()
-      |> Supabase.json(keys: :atoms)
-
-    case resp do
-      # TODO handle error
-      :error ->
+    case Accounts.update_profile(
+           socket.assigns.access_token,
+           socket.assigns.user["id"],
+           socket.assigns.profile,
+           params
+         ) do
+      {:error, _} ->
         {:noreply, socket}
 
-      %{body: [profile]} ->
-        profile = Map.merge(socket.assigns.profile, profile)
+      {:ok, profile} ->
         {:noreply, assign(socket, profile: profile, changeset: Profile.changeset(profile, %{}))}
     end
   end

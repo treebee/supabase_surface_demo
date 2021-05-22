@@ -32,4 +32,19 @@ defmodule SupabaseSurfaceDemo.Accounts do
       _error -> {:error, "Couldn't create profile"}
     end
   end
+
+  def update_profile(access_token, user_id, profile, params) do
+    changeset = Profile.changeset(profile, params)
+
+    case Supabase.init(access_token: access_token)
+         |> Postgrestex.from("profiles")
+         |> Postgrestex.eq("user_id", user_id)
+         |> Postgrestex.update(changeset.changes)
+         |> Postgrestex.update_headers(%{"Prefer" => "return=representation"})
+         |> Postgrestex.call()
+         |> Supabase.json(keys: :atoms) do
+      %{body: [profile]} -> {:ok, profile}
+      _ -> {:error, "Error updating profile"}
+    end
+  end
 end
