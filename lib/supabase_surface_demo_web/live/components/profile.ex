@@ -56,11 +56,18 @@ defmodule SupabaseSurfaceDemoWeb.Components.Profile do
           </div>
           <Button
             html_type="submit" block={{ true }} size="small"
-            class="rounded-md font-semibold uppercase mt-6">update</Button>
+            disabled={{ not form_valid?(@changeset) }}
+            class="rounded-md font-semibold uppercase mt-6"
+          >
+          update
+          </Button>
         </Form>
         <div class="mt-8">
           <Button block={{ true }} type="outline" size="small" to="/logout"
-            class="rounded-md text-white">Logout</Button>
+            class="rounded-md text-white"
+          >
+          Logout
+          </Button>
         </div>
         </div>
       </div>
@@ -78,12 +85,14 @@ defmodule SupabaseSurfaceDemoWeb.Components.Profile do
   end
 
   @impl true
-  def handle_event("submit", %{"profile" => profile}, socket) do
+  def handle_event("submit", params, socket) do
+    changeset = Profile.changeset(socket.assigns.profile, params)
+
     resp =
       Supabase.init(access_token: socket.assigns.access_token)
       |> Postgrestex.from("profiles")
       |> Postgrestex.eq("user_id", socket.assigns.user["id"])
-      |> Postgrestex.update(profile)
+      |> Postgrestex.update(changeset.changes)
       |> Postgrestex.call()
       |> Supabase.json(keys: :atoms)
 
@@ -93,11 +102,16 @@ defmodule SupabaseSurfaceDemoWeb.Components.Profile do
         {:noreply, socket}
 
       %{body: [profile]} ->
-        {:noreply, assign(socket, profile: Map.merge(socket.assigns.profile, profile))}
+        profile = Map.merge(socket.assigns.profile, profile)
+        {:noreply, assign(socket, profile: profile, changeset: Profile.changeset(profile, %{}))}
     end
   end
 
   defp username(user) do
     user["user_metadata"]["full_name"]
+  end
+
+  defp form_valid?(changeset) do
+    changeset.valid? and changeset.changes != %{}
   end
 end
