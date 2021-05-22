@@ -33,7 +33,11 @@ if config_env() == :prod do
 
   config :supabase_surface_demo, SupabaseSurfaceDemo.Repo,
     url: database_url,
-    # IMPORTANT: Or it won't find the DB server
-    socket_options: [:inet6],
+    # IMPORTANT when using postgres db on fly but we are using Supabase
+    # socket_options: [:inet6],
     pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10")
+
+  config :supabase,
+    base_url: System.get_env("SUPABASE_URL"),
+    api_key: System.get_env("SUPABASE_KEY"
 end
