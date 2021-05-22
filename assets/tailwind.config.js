@@ -1,4 +1,3 @@
-const colors = require("tailwindcss/colors");
 
 module.exports = {
   mode: "jit",
@@ -8,7 +7,7 @@ module.exports = {
     "../lib/**/*.eex",
     "./js/**/*.js",
   ],
-  darkMode: false, // or 'media' or 'class'
+  darkMode: 'class',
   theme: {
     extend: {},
     // colors from https://github.com/supabase/ui/blob/develop/tailwind.config.js
@@ -168,5 +167,5 @@ module.exports = {
   variants: {
     extend: {},
   },
-  plugins: [],
+  // plugins: [require('@tailwindcss/forms'), require('@tailwindcss/typography')],
 };

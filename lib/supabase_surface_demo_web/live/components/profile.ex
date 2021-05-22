@@ -4,7 +4,9 @@ defmodule SupabaseSurfaceDemoWeb.Components.Profile do
   alias Surface.Components.Form
   alias Surface.Components.Form.{Field, TextInput, Label}
   alias SupabaseSurface.Components.Button
+  alias SupabaseSurface.Components.TextInput, as: Input
   alias SupabaseSurfaceDemo.Accounts
+  alias SupabaseSurfaceDemo.Profile
 
   @doc "The profile data to display"
   prop(user, :map, required: true)
@@ -16,16 +18,20 @@ defmodule SupabaseSurfaceDemoWeb.Components.Profile do
   prop(access_token, :string, required: true)
 
   data avatar_url, :string, default: ""
+  data changeset, :any
 
   @impl true
   def update(assigns, socket) do
     socket =
       case Accounts.get_profile(assigns.access_token, assigns.user["id"]) do
-        {:ok, profile} ->
-          assign(socket, profile: profile)
+        {:ok, profile_response} ->
+          profile = Map.merge(%Profile{}, profile_response)
+          assign(socket, profile: profile, changeset: Profile.changeset(profile, %{}))
 
         {:error, :no_result} ->
-          assign(socket, profile: Accounts.create_profile(assigns.access_token, assigns.user))
+          profile_response = Accounts.create_profile(assigns.access_token, assigns.user)
+          profile = Map.merge(%Profile{}, profile_response)
+          assign(socket, profile: profile, changeset: Profile.changeset(profile, %{}))
 
         _error ->
           put_flash(socket, :danger, "Couldn't fetch profile")
@@ -41,32 +47,13 @@ defmodule SupabaseSurfaceDemoWeb.Components.Profile do
       <h1 class="text-brand-800 text-lg font-semibold">Hi {{ username(@user) }}</h1>
       <div class={{ "grid grid-cols-1 md:grid-cols-2 gap-16 text-white my-4 px-8 py-6 bg-gray-700 border border-gray-600 border-opacity-60 rounded-md", @class }}>
         <div class="order-last md:order-first">
-        <Form for={{ :profile }} change="change" submit="submit"
+        <Form for={{ @changeset }} as={{ :profile }} change="change" submit="submit"
           >
-          <Field name="email" class="font-semibold text-md mb-4">
-            <Label>Email address</Label>
-            <div class="flex items-center mt-2">
-              <TextInput
-                value="{{ @user["email"] }}"
-                opts={{ readonly: true }}
-                class="text-xs px-4 py-2 text-gray-400 bg-transparent border border-gray-400 rounded-md w-full" />
-            </div>
-          </Field>
-          <Field name="username" class="font-semibold text-md mb-4">
-            <Label>Username</Label>
-            <div class="flex items-center mt-2">
-              <TextInput
-                value="{{ username(@user) }}" class="placeholder-gray-400 text-xs px-4 py-2 bg-transparent border border-gray-400 rounded-md w-full" />
-            </div>
-          </Field>
-          <Field name="website" class="font-semibold text-md mb-4">
-            <Label>Website</Label>
-            <div class="flex items-center mt-2">
-              <TextInput
-                value="{{ nil }}" opts={{ placeholder: "Your website" }} class="placeholder-gray-400 text-xs px-4 py-2 bg-transparent border border-gray-400 rounded-md w-full" />
-            </div>
-          </Field>
-
+          <div class="grid grid-cols-1 gap-4">
+          <Input name={{ :email }} label={{ "Email address" }} opts={{ readonly: true }} />
+          <Input name={{ :username }} label={{ "Username" }} />
+          <Input name={{ :website }} label={{ "Website" }} />
+          </div>
           <Button
             html_type="submit" block={{ true }} size="small"
             class="rounded-md font-semibold uppercase mt-6">update</Button>
@@ -82,8 +69,12 @@ defmodule SupabaseSurfaceDemoWeb.Components.Profile do
   end
 
   @impl true
-  def handle_event("change", _, socket) do
-    {:noreply, socket}
+  def handle_event("change", params, socket) do
+    changeset =
+      Profile.changeset(socket.assigns.profile, params)
+      |> Map.put(:action, :validate)
+
+    {:noreply, assign(socket, changeset: changeset)}
   end
 
   @impl true
@@ -91,10 +82,10 @@ defmodule SupabaseSurfaceDemoWeb.Components.Profile do
     resp =
       Supabase.init(access_token: socket.assigns.access_token)
       |> Postgrestex.from("profiles")
-      |> Postgrestex.eq("id", socket.assigns.profile["id"])
-      |> Postgrestex.update(Map.delete(profile, "email"))
+      |> Postgrestex.eq("user_id", socket.assigns.user["id"])
+      |> Postgrestex.update(profile)
       |> Postgrestex.call()
-      |> Supabase.json()
+      |> Supabase.json(keys: :atoms)
 
     case resp do
       # TODO handle error
