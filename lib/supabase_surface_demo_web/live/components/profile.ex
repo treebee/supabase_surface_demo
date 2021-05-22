@@ -2,7 +2,6 @@ defmodule SupabaseSurfaceDemoWeb.Components.Profile do
   use Surface.LiveComponent
 
   alias Surface.Components.Form
-  alias Surface.Components.Form.{Field, TextInput, Label}
   alias SupabaseSurface.Components.Button
   alias SupabaseSurface.Components.TextInput, as: Input
   alias SupabaseSurfaceDemo.Accounts
