@@ -13,6 +13,7 @@ defmodule SupabaseSurfaceDemoWeb.LoginLive do
         class="md:max-w-lg mx-auto"
         magic_link={{ true }}
         providers={{ ["github", "google"] }}
+        provider_redirect_url="http://localhost:4004/login"
         />
     </div>
     """

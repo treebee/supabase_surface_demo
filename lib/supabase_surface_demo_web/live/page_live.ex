@@ -39,8 +39,4 @@ defmodule SupabaseSurfaceDemoWeb.PageLive do
     </main>
     """
   end
-
-  defp username(user) do
-    user["user_metadata"]["full_name"]
-  end
 end

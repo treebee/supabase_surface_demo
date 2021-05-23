@@ -1,5 +1,8 @@
 use Mix.Config
 
+config :supabase_surface_demo,
+  provider_redirect_url: "http://localhost:4004/login"
+
 # For development, we disable any cache and enable
 # debugging and code reloading.
 #

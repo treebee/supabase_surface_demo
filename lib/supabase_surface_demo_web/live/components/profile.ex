@@ -95,6 +95,7 @@ defmodule SupabaseSurfaceDemoWeb.Components.Profile do
         {:noreply, socket}
 
       {:ok, profile} ->
+        profile = Map.merge(%Profile{}, profile)
         {:noreply, assign(socket, profile: profile, changeset: Profile.changeset(profile, %{}))}
     end
   end
