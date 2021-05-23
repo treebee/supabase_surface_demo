@@ -3,7 +3,7 @@ defmodule SupabaseSurfaceDemoWeb.Components.Profile do
 
   alias Surface.Components.Form
   alias SupabaseSurface.Components.Button
-  alias SupabaseSurface.Components.TextInput, as: Input
+  alias SupabaseSurface.Components.{EmailInput, TextInput}
   alias SupabaseSurfaceDemo.Accounts
   alias SupabaseSurfaceDemo.Profile
 
@@ -49,9 +49,9 @@ defmodule SupabaseSurfaceDemoWeb.Components.Profile do
         <Form for={{ @changeset }} as={{ :profile }} change="change" submit="submit"
           >
           <div class="grid grid-cols-1 gap-4">
-          <Input name={{ :email }} label={{ "Email address" }} opts={{ readonly: true }} />
-          <Input name={{ :username }} label={{ "Username" }} />
-          <Input name={{ :website }} label={{ "Website" }} />
+          <EmailInput name={{ :email }} label={{ "Email address" }} opts={{ readonly: true }} />
+          <TextInput name={{ :username }} label={{ "Username" }} />
+          <TextInput name={{ :website }} label={{ "Website" }} />
           </div>
           <Button
             html_type="submit" block={{ true }} size="small"
