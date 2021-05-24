@@ -1,8 +1,7 @@
 # SupabaseSurfaceDemo
 
-This is a demo of using [Surface](https://github.com/surface-ui/surface) with Supabase.
-Mostly it's a playground for myself to get more familiar with Surface and Supabase and maybe end
-up with a bunch of reusable components for rapid future development.
+This is a demo of using the components provided by [supabase-surface](https://github.com/treebee/supabase-surface)
 
-Currently testing out the components created in the [supabase-surface](https://github.com/treebee/supabase-surface) repo.
+Uses the PETAL stack, with [Supabase](https://supabase.io) as backend.
 
+A running version of this demo can be found [here](https://young-grass-5276.fly.dev/)
