@@ -3,7 +3,7 @@ defmodule SupabaseSurfaceDemoWeb.Components.Profile do
 
   alias Surface.Components.Form
   alias SupabaseSurface.Components.Button
-  alias SupabaseSurface.Components.{EmailInput, TextInput}
+  alias SupabaseSurface.Components.{EmailInput, TextInput, Typography}
   alias SupabaseSurfaceDemo.Accounts
   alias SupabaseSurfaceDemo.Profile
 
@@ -43,7 +43,7 @@ defmodule SupabaseSurfaceDemoWeb.Components.Profile do
   def render(assigns) do
     ~H"""
     <div class={{ @class }}>
-      <h1 class="text-brand-800 text-lg font-semibold">Hi {{ username(@user) }}</h1>
+      <Typography.Title level={{ 2 }}>Profile</Typography.Title>
       <div class={{ "grid grid-cols-1 md:grid-cols-2 gap-16 text-white my-4 px-8 py-6 bg-gray-700 border border-gray-600 border-opacity-60 rounded-md", @class }}>
         <div class="order-last md:order-first">
         <Form for={{ @changeset }} as={{ :profile }} change="change" submit="submit"

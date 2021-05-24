@@ -1,3 +1,52 @@
+const gray = {
+  100: "#eeeeee",
+  200: "#e0e0e0",
+  300: "#bbbbbb",
+  400: "#666666",
+  500: "#444444",
+  650: "#333",
+  600: "#2a2a2a",
+  700: "#1f1f1f",
+  800: "#181818",
+  900: "#0f0f0f",
+};
+const brand = {
+  100: "#c5f1dd",
+  200: "#c5f1dd",
+  300: "#9fe7c7",
+  400: "#65d9a5",
+  500: "#24b47e",
+  600: "#38bc81",
+  700: "#1c8656",
+  800: "#10633e",
+  900: "#10633e",
+};
+
+const blueGray = {
+  50: "#F8FAFC",
+  100: "#F1F5F9",
+  200: "#E2E8F0",
+  300: "#CBD5E1",
+  400: "#94A3B8",
+  500: "#64748B",
+  600: "#475569",
+  700: "#334155",
+  800: "#1E293B",
+  900: "#0F172A",
+};
+
+const coolGray = {
+  50: "#F9FAFB",
+  100: "#F3F4F6",
+  200: "#E5E7EB",
+  300: "#D1D5DB",
+  400: "#9CA3AF",
+  500: "#6B7280",
+  600: "#4B5563",
+  700: "#374151",
+  800: "#1F2937",
+  900: "#111827",
+};
 
 module.exports = {
   mode: "jit",
@@ -7,165 +56,136 @@ module.exports = {
     "../lib/**/*.eex",
     "./js/**/*.js",
   ],
-  darkMode: 'class',
+  darkMode: "class",
   theme: {
-    extend: {},
-    // colors from https://github.com/supabase/ui/blob/develop/tailwind.config.js
-    colors: {
-      transparent: "transparent",
-      current: "currentColor",
+    borderColor: (theme) => ({
+      ...theme("colors"),
+      DEFAULT: "#f0f2f5",
+      // note: default border not working
+      // temp workaround is to use variations below
+      lightmode: "#f0f2f5",
+      darkmode: theme("colors.gray.600", "currentColor"),
+    }),
+    extend: {
+      typography: {
+        DEFAULT: {
+          css: {
+            "code::before": {
+              content: '""',
+            },
+            "code::after": {
+              content: '""',
+            },
+          },
+        },
+      },
+      colors: {
+        transparent: "transparent",
+        current: "currentColor",
 
-      black: "#000",
-      white: "#fff",
+        black: "#000",
+        white: "#fff",
 
-      dark: {
-        100: "#eeeeee",
-        200: "#e0e0e0",
-        300: "#bbbbbb",
-        400: "#666666",
-        500: "#444444",
-        600: "#2a2a2a",
-        700: "#1f1f1f",
-        800: "#181818",
-        900: "#0f0f0f",
-      },
+        gray: { ...gray },
+        brand: { ...brand },
+        blueGray: { ...blueGray },
+        coolGray: { ...coolGray },
 
-      brand: {
-        50: "#82dab0",
-        100: "#82dab0",
-        200: "#69d3a0",
-        300: "#50cb90",
-        400: "#C5F1DD",
-        500: "#9FE7C7",
-        600: "#65D9A5",
-        700: "#3ECF8E",
-        800: "#24b47e", // green-500 in dashboard
-        900: "#2c9c6a",
-      },
+        dark: {
+          100: "#eeeeee",
+          200: "#e0e0e0",
+          300: "#bbbbbb",
+          400: "#666666",
+          500: "#444444",
+          600: "#2a2a2a",
+          700: "#1f1f1f",
+          800: "#181818",
+          900: "#0f0f0f",
+        },
 
-      gray: {
-        // 100: '#f7fafc',
-        // 200: '#edf2f7',
-        // 300: '#e2e8f0',
-        // 400: '#cbd5e0',
-        // 500: '#a0aec0',
-        // 600: '#718096',
-        // 700: '#4a5568',
-        // 800: '#2d3748',
-        // 900: '#1a202c',
-        100: "#eeeeee",
-        200: "#e0e0e0",
-        300: "#bbbbbb",
-        400: "#666666",
-        500: "#444444",
-        600: "#2a2a2a",
-        700: "#1f1f1f",
-        800: "#181818",
-        900: "#0f0f0f",
-      },
-      red: {
-        100: "#fff5f5",
-        200: "#fed7d7",
-        300: "#feb2b2",
-        400: "#fc8181",
-        500: "#f56565",
-        600: "#e53e3e",
-        700: "#c53030",
-        800: "#9b2c2c",
-        900: "#742a2a",
-      },
-      orange: {
-        100: "#fffaf0",
-        200: "#feebc8",
-        300: "#fbd38d",
-        400: "#f6ad55",
-        500: "#ed8936",
-        600: "#dd6b20",
-        700: "#c05621",
-        800: "#9c4221",
-        900: "#7b341e",
-      },
-      yellow: {
-        100: "#fffff0",
-        200: "#fefcbf",
-        300: "#faf089",
-        400: "#f6e05e",
-        500: "#ecc94b",
-        600: "#d69e2e",
-        700: "#b7791f",
-        800: "#975a16",
-        900: "#744210",
-      },
-      green: {
-        100: "#f0fff4",
-        200: "#c6f6d5",
-        300: "#9ae6b4",
-        400: "#68d391",
-        500: "#48bb78",
-        600: "#38a169",
-        700: "#2f855a",
-        800: "#276749",
-        900: "#22543d",
-      },
-      teal: {
-        100: "#e6fffa",
-        200: "#b2f5ea",
-        300: "#81e6d9",
-        400: "#4fd1c5",
-        500: "#38b2ac",
-        600: "#319795",
-        700: "#2c7a7b",
-        800: "#285e61",
-        900: "#234e52",
-      },
-      blue: {
-        100: "#ebf8ff",
-        200: "#bee3f8",
-        300: "#90cdf4",
-        400: "#63b3ed",
-        500: "#4299e1",
-        600: "#3182ce",
-        700: "#2b6cb0",
-        800: "#2c5282",
-        900: "#2a4365",
-      },
-      indigo: {
-        100: "#ebf4ff",
-        200: "#c3dafe",
-        300: "#a3bffa",
-        400: "#7f9cf5",
-        500: "#667eea",
-        600: "#5a67d8",
-        700: "#4c51bf",
-        800: "#434190",
-        900: "#3c366b",
-      },
-      purple: {
-        100: "#faf5ff",
-        200: "#e9d8fd",
-        300: "#d6bcfa",
-        400: "#b794f4",
-        500: "#9f7aea",
-        600: "#805ad5",
-        700: "#6b46c1",
-        800: "#553c9a",
-        900: "#44337a",
-      },
-      pink: {
-        100: "#fff5f7",
-        200: "#fed7e2",
-        300: "#fbb6ce",
-        400: "#f687b3",
-        500: "#ed64a6",
-        600: "#d53f8c",
-        700: "#b83280",
-        800: "#97266d",
-        900: "#702459",
+        "secondary-text": {
+          light: "#71767F",
+          dark: "#878787",
+        },
+
+        brand: {
+          50: "#82dab0",
+          100: "#82dab0",
+          200: "#69d3a0",
+          300: "#50cb90",
+          400: "#C5F1DD",
+          500: "#9FE7C7",
+          600: "#65D9A5",
+          700: "#3ECF8E",
+          800: "#24b47e", // green-500 in dashboard
+          900: "#2c9c6a",
+        },
+
+        /*
+          typography
+        */
+        "typography-body": {
+          light: coolGray[600],
+          dark: gray[100],
+        },
+        "typography-body-secondary": {
+          light: coolGray[500],
+          dark: gray[300],
+        },
+        "typography-body-strong": {
+          light: coolGray[100],
+          dark: "white",
+        },
+        "typography-body-faded": {
+          light: coolGray[400],
+          dark: gray[400],
+        },
+
+        /*
+          app backgrounds
+        */
+        "bg-primary": {
+          light: "white",
+          dark: gray[800],
+        },
+        "bg-secondary": {
+          light: blueGray[100],
+          dark: gray[700],
+        },
+        "bg-alt": {
+          light: blueGray[50], // gray[100],
+          dark: gray[600],
+        },
+
+        /*
+          Forms
+        */
+        "input-value": {
+          light: coolGray[600],
+          dark: gray[200],
+        },
+        "input-placeholder": {
+          light: coolGray[300],
+          dark: gray[400],
+        },
+        "input-border": {
+          light: coolGray[300],
+          dark: gray[500],
+        },
+        "input-label": {
+          light: coolGray[600],
+          dark: gray[200],
+        },
+        "input-border-hover": {
+          light: coolGray[400],
+          dark: gray[400],
+        },
+        "input-border-focus": {
+          light: brand[300],
+          dark: brand[300],
+        },
       },
     },
   },
-  variants: {
-    extend: {},
-  },
-  // plugins: [require('@tailwindcss/forms'), require('@tailwindcss/typography')],
+  plugins: [require("@tailwindcss/typography")],
 };
