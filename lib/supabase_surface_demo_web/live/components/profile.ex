@@ -28,7 +28,7 @@ defmodule SupabaseSurfaceDemoWeb.Components.Profile do
           assign(socket, profile: profile, changeset: Profile.changeset(profile, %{}))
 
         {:error, :no_result} ->
-          profile_response = Accounts.create_profile(assigns.access_token, assigns.user)
+          {:ok, profile_response} = Accounts.create_profile(assigns.access_token, assigns.user)
           profile = Map.merge(%Profile{}, profile_response)
           assign(socket, profile: profile, changeset: Profile.changeset(profile, %{}))
 
@@ -98,10 +98,6 @@ defmodule SupabaseSurfaceDemoWeb.Components.Profile do
         profile = Map.merge(%Profile{}, profile)
         {:noreply, assign(socket, profile: profile, changeset: Profile.changeset(profile, %{}))}
     end
-  end
-
-  defp username(user) do
-    user["user_metadata"]["full_name"]
   end
 
   defp form_valid?(changeset) do

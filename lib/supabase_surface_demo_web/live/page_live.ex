@@ -1,7 +1,7 @@
 defmodule SupabaseSurfaceDemoWeb.PageLive do
   use SupabaseSurfaceDemoWeb, :surface_view
 
-  alias SupabaseSurface.Components.Button
+  alias SupabaseSurface.Components.SupabaseImage
   alias SupabaseSurfaceDemo.Accounts
   alias SupabaseSurfaceDemoWeb.Components.Profile
   alias SupabaseSurface.Components.Divider
@@ -40,6 +40,7 @@ defmodule SupabaseSurfaceDemoWeb.PageLive do
               leave_start: "opacity-100 transform scale-100",
               leave_end: "opacity-0 transform scale-90"
             }}
+            y_position="top-10"
             x_position="right-0"
           >
             <DropdownItem to="/">
@@ -57,12 +58,12 @@ defmodule SupabaseSurfaceDemoWeb.PageLive do
               <DropdownItemIcon>{{ Heroicons.Outline.logout(class: "w-4 h-4") }}</DropdownItemIcon>
               <Typography.Text>Logout</Typography.Text>
             </DropdownItem>
-            <Button
-              type="link"
-              opts={{ "@click": "open = !open", "@click.away": "open = false", "@keydown.escape.window": "open = false" }}
+            <button
+              class="rounded-full"
+              @click="open = !open" @click.away="open = false" @keydown.escape.window="open = false"
             >
-              Click me
-            </Button>
+              <SupabaseImage id="avatar" src={{ @user["user_metadata"]["avatar_url"] }} width="30" height="30" class="rounded-full" />
+            </button>
           </Dropdown>
       </nav>
     </header>

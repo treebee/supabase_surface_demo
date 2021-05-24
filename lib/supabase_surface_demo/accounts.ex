@@ -19,8 +19,16 @@ defmodule SupabaseSurfaceDemo.Accounts do
   end
 
   def create_profile(access_token, user) do
-    username = Map.get(user, "user_metadata", %{}) |> Map.get("full_name")
-    attrs = %{"username" => username, "user_id" => user["id"], "email" => user["email"]}
+    meta = Map.get(user, "user_metadata", %{})
+    username = meta |> Map.get("full_name")
+    avatar_url = meta |> Map.get("avatar_url")
+
+    attrs = %{
+      "username" => username,
+      "user_id" => user["id"],
+      "email" => user["email"],
+      "avatar_url" => avatar_url
+    }
 
     case Supabase.init(access_token: access_token)
          |> Postgrestex.from("profiles")

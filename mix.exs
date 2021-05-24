@@ -49,8 +49,8 @@ defmodule SupabaseSurfaceDemo.MixProject do
       {:plug_cowboy, "~> 2.0"},
       {:surface, "~> 0.4.0"},
       {:supabase, github: "treebee/supabase-elixir"},
-      # {:supabase_surface, github: "treebee/supabase-surface"},
-      {:supabase_surface, path: "../supabase-surface"},
+      {:supabase_surface, github: "treebee/supabase-surface"},
+      # {:supabase_surface, path: "../supabase-surface"},
       {:gotrue, "~> 0.2.0", override: true},
       {:heroicons, "~> 0.2.2"},
       {:joken, "~> 2.0"}
