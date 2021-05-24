@@ -78,14 +78,14 @@ defmodule SupabaseSurfaceDemoWeb.PageLive do
 
         <Profile id="profile" user={{ @user }} access_token={{ @access_token }} />
     </main>
-    <footer class="bg-dark-700">
-      <div class="grid grid-cols-3 gap-8 py-2 container mx-auto">
+    <footer class="bg-dark-700 container mx-auto">
+      <div class="grid grid-cols-3 gap-8 py-2 max-w-3xl container mx-auto">
           <Typography.Link href="https://supabase.io" class="flex items-center">Supabase.io</Typography.Link>
-          <Typography.Link class="flex items-center" href="https://github.com/treebee/supabase_surface_demo">
+          <Typography.Link class="flex items-center justify-center" href="https://github.com/treebee/supabase_surface_demo">
             <SocialIcon provider="github" class="w-4 h-4 mr-2" />
             Repository
           </Typography.Link>
-         <Typography.Link class="flex items-center" href="https://github.com/treebee/supabase-surface">
+         <Typography.Link class="flex items-center justify-end" href="https://github.com/treebee/supabase-surface">
             <SocialIcon provider="github" class="w-4 h-4 mr-2" />
             Component Repo
          </Typography.Link>
