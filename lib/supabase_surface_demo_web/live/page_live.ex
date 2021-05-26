@@ -40,8 +40,8 @@ defmodule SupabaseSurfaceDemoWeb.PageLive do
               leave_start: "opacity-100 transform scale-100",
               leave_end: "opacity-0 transform scale-90"
             }}
-            y_position="top-10"
-            x_position="right-0"
+            side="bottom"
+            align="end"
           >
             <DropdownItem to="/">
               <DropdownItemIcon>{{ Heroicons.Outline.user(class: "w-4 h-4") }}</DropdownItemIcon>
@@ -78,7 +78,7 @@ defmodule SupabaseSurfaceDemoWeb.PageLive do
 
         <Profile id="profile" user={{ @user }} access_token={{ @access_token }} />
     </main>
-    <footer class="bg-dark-700 container mx-auto">
+    <footer class="bg-dark-700">
       <div class="grid grid-cols-3 gap-8 py-2 max-w-3xl container mx-auto">
           <Typography.Link href="https://supabase.io" class="flex items-center">Supabase.io</Typography.Link>
           <Typography.Link class="flex items-center justify-center" href="https://github.com/treebee/supabase_surface_demo">
