@@ -1,7 +1,6 @@
 defmodule SupabaseSurfaceDemoWeb.PageLive do
   use SupabaseSurfaceDemoWeb, :surface_view
 
-  alias SupabaseSurface.Components.SupabaseImage
   alias SupabaseSurfaceDemo.Accounts
   alias SupabaseSurfaceDemoWeb.Components.Profile
   alias SupabaseSurface.Components.Divider
@@ -16,14 +15,21 @@ defmodule SupabaseSurfaceDemoWeb.PageLive do
   @impl true
   def mount(_params, %{"access_token" => access_token}, socket) do
     socket = assign_new(socket, :user, fn -> Accounts.get_user!(access_token) end)
-    {:ok, assign(socket, access_token: access_token)}
+    {:ok, assign(socket, access_token: access_token) |> allow_uploads()}
   end
 
   @impl true
-  def mount(_, _, socket), do: {:ok, socket}
+  def mount(_, _, socket), do: {:ok, allow_uploads(socket)}
 
   @impl true
   def handle_params(_, _, socket), do: {:noreply, socket}
+
+  defp allow_uploads(socket) do
+    allow_upload(socket, :avatar,
+      accept: ~w(.jpg .jpeg .png .webp),
+      max_entries: 1
+    )
+  end
 
   @impl true
   def render(assigns) do
@@ -62,7 +68,7 @@ defmodule SupabaseSurfaceDemoWeb.PageLive do
               class="rounded-full"
               @click="open = !open" @click.away="open = false" @keydown.escape.window="open = false"
             >
-              <SupabaseImage id="avatar" src={{ @user["user_metadata"]["avatar_url"] }} width="30" height="30" class="rounded-full" />
+              <img src={{ @user["user_metadata"]["avatar_url"] }} width="30" height="30" class="rounded-full" />
             </button>
           </Dropdown>
       </nav>
@@ -76,7 +82,7 @@ defmodule SupabaseSurfaceDemoWeb.PageLive do
         phx-click="lv:clear-flash"
         phx-value-key="error">{{ live_flash(@flash, :error) }}</p>
 
-        <Profile id="profile" user={{ @user }} access_token={{ @access_token }} />
+        <Profile id="profile" user={{ @user }} access_token={{ @access_token }} uploads={{ @uploads }} />
     </main>
     <footer class="bg-dark-700">
       <div class="grid grid-cols-3 gap-8 py-2 max-w-3xl container mx-auto">

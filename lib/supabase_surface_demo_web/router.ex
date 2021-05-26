@@ -19,6 +19,8 @@ defmodule SupabaseSurfaceDemoWeb.Router do
   scope "/", SupabaseSurfaceDemoWeb do
     pipe_through(:browser)
 
+    get "/public/:user_id/:filename", ImageController, :public
+
     live("/", PageLive, :index)
     live("/login", LoginLive, :index)
 
