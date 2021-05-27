@@ -6,6 +6,13 @@ defmodule SupabaseSurfaceDemo.Accounts do
     user
   end
 
+  def get_profile!(access_token, user_id) do
+    case get_profile(access_token, user_id) do
+      {:ok, profile} -> profile
+      {:error, error} -> raise error
+    end
+  end
+
   def get_profile(access_token, user_id) do
     case Supabase.init(access_token: access_token)
          |> Postgrestex.from("profiles")
@@ -14,7 +21,7 @@ defmodule SupabaseSurfaceDemo.Accounts do
          |> Supabase.json(keys: :atoms) do
       %{status: 200, body: [profile]} -> {:ok, profile}
       %{status: 200, body: []} -> {:error, :no_result}
-      _ -> raise "Failed fetching profile"
+      %{body: %{"error" => error}} -> {:error, error}
     end
   end
 

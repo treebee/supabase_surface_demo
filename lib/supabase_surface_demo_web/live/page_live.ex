@@ -13,8 +13,9 @@ defmodule SupabaseSurfaceDemoWeb.PageLive do
   data access_token, :string, default: nil
 
   @impl true
-  def mount(_params, %{"access_token" => access_token}, socket) do
+  def mount(_params, %{"access_token" => access_token, "user_id" => user_id}, socket) do
     socket = assign_new(socket, :user, fn -> Accounts.get_user!(access_token) end)
+    socket = assign_new(socket, :profile, fn -> Accounts.get_profile!(access_token, user_id) end)
     {:ok, assign(socket, access_token: access_token) |> allow_uploads()}
   end
 
@@ -68,7 +69,7 @@ defmodule SupabaseSurfaceDemoWeb.PageLive do
               class="rounded-full"
               @click="open = !open" @click.away="open = false" @keydown.escape.window="open = false"
             >
-              <img src={{ @user["user_metadata"]["avatar_url"] }} width="30" height="30" class="rounded-full" />
+              <img src={{ @profile.avatar_url }} width="30" height="30" class="rounded-full" />
             </button>
           </Dropdown>
       </nav>
