@@ -1,6 +1,7 @@
 defmodule SupabaseSurfaceDemoWeb.PageLive do
   use SupabaseSurfaceDemoWeb, :surface_view
 
+  alias Surface.Components.LivePatch
   alias SupabaseSurfaceDemo.Accounts
   alias SupabaseSurfaceDemoWeb.Components.Profile
   alias SupabaseSurface.Components.Divider
@@ -23,7 +24,9 @@ defmodule SupabaseSurfaceDemoWeb.PageLive do
   def mount(_, _, socket), do: {:ok, allow_uploads(socket)}
 
   @impl true
-  def handle_params(_, _, socket), do: {:noreply, socket}
+  def handle_params(params, _, socket) do
+    {:noreply, assign(socket, page: Map.get(params, "page"))}
+  end
 
   defp allow_uploads(socket) do
     allow_upload(socket, :avatar,
@@ -37,7 +40,10 @@ defmodule SupabaseSurfaceDemoWeb.PageLive do
     ~H"""
     <div class="flex flex-col flex-1 h-screen">
     <header class="bg-dark-700">
-      <nav class="flex justify-end container mx-auto max-w-3xl items-center py-4">
+      <nav class="flex justify-between container mx-auto max-w-3xl items-center py-4">
+          <LivePatch to="/">
+            <p class="text-brand-800 font-semibold text-2xl">Surface Supabase Demo</p>
+          </LivePatch>
           <Dropdown id="user-menu"
             transition={{
               enter: "transition ease-out origin-top-right duration-300",
@@ -50,18 +56,18 @@ defmodule SupabaseSurfaceDemoWeb.PageLive do
             side="bottom"
             align="end"
           >
-            <DropdownItem to="/">
+            <DropdownItem to="/profile" class="hover:bg-gray-600">
               <DropdownItemIcon>{{ Heroicons.Outline.user(class: "w-4 h-4") }}</DropdownItemIcon>
               <Typography.Text>Profile</Typography.Text>
             </DropdownItem>
-            <DropdownItem to="/">
+            <DropdownItem to="/"  class="hover:bg-gray-600">
               <DropdownItemIcon>{{ Heroicons.Outline.cog(class: "w-4 h-4") }}</DropdownItemIcon>
               <Typography.Text>Settings</Typography.Text>
             </DropdownItem>
             <template slot="items">
               <Divider light={{ true }} />
             </template>
-            <DropdownItem to="/logout" method={{ :post }}>
+            <DropdownItem to="/logout" method={{ :post }} class="hover:bg-gray-600">
               <DropdownItemIcon>{{ Heroicons.Outline.logout(class: "w-4 h-4") }}</DropdownItemIcon>
               <Typography.Text>Logout</Typography.Text>
             </DropdownItem>
@@ -83,7 +89,7 @@ defmodule SupabaseSurfaceDemoWeb.PageLive do
         phx-click="lv:clear-flash"
         phx-value-key="error">{{ live_flash(@flash, :error) }}</p>
 
-        <Profile id="profile" user={{ @user }} access_token={{ @access_token }} uploads={{ @uploads }} />
+        <Profile :if={{ @page == "profile" }} id="profile" user={{ @user }} access_token={{ @access_token }} uploads={{ @uploads }} />
     </main>
     <footer class="bg-dark-700">
       <div class="grid grid-cols-3 gap-8 py-2 max-w-3xl container mx-auto">

@@ -21,17 +21,18 @@ defmodule SupabaseSurfaceDemoWeb.Router do
 
     get "/public/:user_id/:filename", ImageController, :public
 
-    live("/", PageLive, :index)
-    live("/login", LoginLive, :index)
+    live "/", PageLive, :index
+    live "/login", LoginLive, :index
+    live "/:page", PageLive, :index
 
-    post("/logout", SessionController, :logout)
+    post "/logout", SessionController, :logout
   end
 
   # Other scopes may use custom stacks.
   scope "/", SupabaseSurfaceDemoWeb do
     pipe_through(:api)
 
-    post("/session", SessionController, :set_session)
+    post "/session", SessionController, :set_session
   end
 
   # Enables LiveDashboard only for development
