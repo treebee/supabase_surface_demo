@@ -112,7 +112,12 @@ defmodule SupabaseSurfaceDemoWeb.Components.Profile do
 
       {:ok, profile} ->
         profile = Map.merge(%Profile{}, profile)
-        {:noreply, assign(socket, profile: profile, changeset: Profile.changeset(profile, %{}))}
+
+        socket =
+          socket
+          |> assign(profile: profile, changeset: Profile.changeset(profile, %{}))
+
+        {:noreply, socket}
     end
   end
 
@@ -123,19 +128,33 @@ defmodule SupabaseSurfaceDemoWeb.Components.Profile do
       consume_uploaded_entries(socket, :avatar, fn %{path: path}, entry ->
         key = "public/" <> socket.assigns.profile.user_id <> "/avatar." <> extension(entry)
 
-        case Supabase.storage(socket.assigns.access_token)
-             |> Supabase.Storage.from("avatars")
-             |> Supabase.Storage.upload(
-               key,
-               path,
-               content_type: entry.client_type
-             ) do
+        with {:ok, %{"statusCode" => "23505"}} <-
+               upload_file(socket.assigns.access_token, key, path, entry),
+             {:ok, %{"Key" => "avatars/" <> blob_key}} <-
+               update_file(socket.assigns.access_token, key, path, entry) do
+          blob_key
+        else
           {:ok, %{"Key" => "avatars/" <> blob_key}} -> blob_key
-          {:ok, %{"statusCode" => "23505"}} -> key
         end
       end)
 
     Map.put(params, "avatar_url", uploaded_file)
+  end
+
+  def upload_file(access_token, key, path, entry) do
+    Supabase.storage(access_token)
+    |> Supabase.Storage.from("avatars")
+    |> Supabase.Storage.upload(
+      key,
+      path,
+      content_type: entry.client_type
+    )
+  end
+
+  def update_file(access_token, key, path, entry) do
+    Supabase.storage(access_token)
+    |> Supabase.Storage.from("avatars")
+    |> Supabase.Storage.update(key, path, content_type: entry.client_type)
   end
 
   defp form_valid?(changeset, uploads) do

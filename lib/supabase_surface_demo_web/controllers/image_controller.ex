@@ -13,6 +13,7 @@ defmodule SupabaseSurfaceDemoWeb.ImageController do
 
     conn
     |> put_resp_content_type(MIME.from_path(filename))
+    |> put_resp_header("cache-control", "public, max-age=15552000")
     |> send_resp(200, data)
   end
 end
