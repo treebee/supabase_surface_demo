@@ -9,7 +9,7 @@ defmodule SupabaseSurfaceDemoWeb.Components.Profile do
   alias SupabaseSurfaceDemo.Profile
 
   @doc "The profile data to display"
-  prop(user, :map, required: true)
+  prop(profile, :struct, required: true)
 
   @doc "CSS classes to pass to the outer HTML element"
   prop(class, :css_class, default: "")
@@ -18,27 +18,11 @@ defmodule SupabaseSurfaceDemoWeb.Components.Profile do
   prop(access_token, :string, required: true)
 
   prop uploads, :struct, required: true
-  data profile, :map
   data changeset, :any
 
   @impl true
   def update(assigns, socket) do
-    socket =
-      case Accounts.get_profile(assigns.access_token, assigns.user["id"]) do
-        {:ok, profile_response} ->
-          profile = Map.merge(%Profile{}, profile_response)
-          assign(socket, profile: profile, changeset: Profile.changeset(profile, %{}))
-
-        {:error, :no_result} ->
-          {:ok, profile_response} = Accounts.create_profile(assigns.access_token, assigns.user)
-          profile = Map.merge(%Profile{}, profile_response)
-          assign(socket, profile: profile, changeset: Profile.changeset(profile, %{}))
-
-        _error ->
-          put_flash(socket, :danger, "Couldn't fetch profile")
-      end
-
-    {:ok, assign(socket, assigns)}
+    {:ok, assign(socket, assigns) |> assign(changeset: Profile.changeset(assigns.profile, %{}))}
   end
 
   @impl true
@@ -103,7 +87,7 @@ defmodule SupabaseSurfaceDemoWeb.Components.Profile do
 
     case Accounts.update_profile(
            socket.assigns.access_token,
-           socket.assigns.user["id"],
+           socket.assigns.profile.user_id,
            socket.assigns.profile,
            params
          ) do
@@ -111,8 +95,6 @@ defmodule SupabaseSurfaceDemoWeb.Components.Profile do
         {:noreply, socket}
 
       {:ok, profile} ->
-        profile = Map.merge(%Profile{}, profile)
-
         socket =
           socket
           |> assign(profile: profile, changeset: Profile.changeset(profile, %{}))
@@ -124,7 +106,7 @@ defmodule SupabaseSurfaceDemoWeb.Components.Profile do
   defp handle_upload(params, %{assigns: %{uploads: %{avatar: []}}}), do: params
 
   defp handle_upload(params, socket) do
-    [uploaded_file] =
+    uploaded_files =
       consume_uploaded_entries(socket, :avatar, fn %{path: path}, entry ->
         key = "public/" <> socket.assigns.profile.user_id <> "/avatar." <> extension(entry)
 
@@ -138,7 +120,10 @@ defmodule SupabaseSurfaceDemoWeb.Components.Profile do
         end
       end)
 
-    Map.put(params, "avatar_url", uploaded_file)
+    case uploaded_files do
+      [uploaded_file] -> Map.put(params, "avatar_url", uploaded_file)
+      [] -> params
+    end
   end
 
   def upload_file(access_token, key, path, entry) do

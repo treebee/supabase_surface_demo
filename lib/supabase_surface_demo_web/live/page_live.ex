@@ -3,7 +3,9 @@ defmodule SupabaseSurfaceDemoWeb.PageLive do
 
   alias Surface.Components.LivePatch
   alias SupabaseSurfaceDemo.Accounts
+  alias SupabaseSurfaceDemo.UserClicks
   alias SupabaseSurfaceDemoWeb.Components.Profile
+  alias SupabaseSurface.Components.Button
   alias SupabaseSurface.Components.Divider
   alias SupabaseSurface.Components.Dropdown
   alias SupabaseSurface.Components.DropdownItem
@@ -12,11 +14,19 @@ defmodule SupabaseSurfaceDemoWeb.PageLive do
   alias SupabaseSurface.Components.Icons.SocialIcon
 
   data access_token, :string, default: nil
+  data page, :string, default: nil
+  data clicks_total, :integer, default: 0
+  data clicks_user, :integer, default: 0
 
   @impl true
   def mount(_params, %{"access_token" => access_token, "user_id" => user_id}, socket) do
     socket = assign_new(socket, :user, fn -> Accounts.get_user!(access_token) end)
-    socket = assign_new(socket, :profile, fn -> Accounts.get_profile!(access_token, user_id) end)
+
+    socket =
+      assign_new(socket, :profile, fn ->
+        Accounts.get_profile!(access_token, user_id, create: true)
+      end)
+
     {:ok, assign(socket, access_token: access_token) |> allow_uploads()}
   end
 
@@ -25,7 +35,18 @@ defmodule SupabaseSurfaceDemoWeb.PageLive do
 
   @impl true
   def handle_params(params, _, socket) do
-    {:noreply, assign(socket, page: Map.get(params, "page"))}
+    socket =
+      case Map.get(params, "page") do
+        nil ->
+          clicks_total = UserClicks.get_num_clicks()
+          clicks_user = UserClicks.get_num_clicks_user(socket.assigns.user["id"])
+          assign(socket, clicks_total: clicks_total, clicks_user: clicks_user, page: nil)
+
+        page ->
+          assign(socket, page: page)
+      end
+
+    {:noreply, socket}
   end
 
   defp allow_uploads(socket) do
@@ -39,7 +60,12 @@ defmodule SupabaseSurfaceDemoWeb.PageLive do
   def render(assigns) do
     ~H"""
     <div class="flex flex-col flex-1 h-screen">
-    <header class="bg-dark-700">
+    <header id="header" class="bg-dark-700" phx-hook="Realtime"
+      data-api-key={{ Application.get_env(:supabase, :api_key) }}
+      data-url={{ Application.get_env(:supabase, :base_url) }}
+      data-event="UPDATE"
+      data-topic="realtime:public:profiles"
+    >
       <nav class="flex justify-between container mx-auto max-w-3xl items-center py-4">
           <LivePatch to="/">
             <p class="text-brand-800 font-semibold text-2xl">Surface Supabase Demo</p>
@@ -88,8 +114,18 @@ defmodule SupabaseSurfaceDemoWeb.PageLive do
       <p class="alert alert-danger" role="alert"
         phx-click="lv:clear-flash"
         phx-value-key="error">{{ live_flash(@flash, :error) }}</p>
-
-        <Profile :if={{ @page == "profile" }} id="profile" user={{ @user }} access_token={{ @access_token }} uploads={{ @uploads }} />
+        <Profile :if={{ @page == "profile" }} id="profile" profile={{ @profile }} access_token={{ @access_token }} uploads={{ @uploads }} />
+        <div :if={{ @page != "profile" }} id="counter"
+          phx-hook="Realtime"
+          data-api-key={{ Application.get_env(:supabase, :api_key) }}
+          data-url={{ Application.get_env(:supabase, :base_url) }}
+          data-event="INSERT"
+          data-topic="realtime:public:user_clicks"
+          class="flex flex-col gap-4 container mx-auto max-w-xl bg-dark-700 p-8 mt-20">
+            <div><Button type="outline" click="increment">click me</Button></div>
+            <Typography.Title level={{ 4 }}>This button was clicked <span class="text-brand-800 font-bold text-3xl mx-2">{{ @clicks_total }}</span> times.</Typography.Title>
+            <Typography.Title level={{ 5 }}>You clicked it <span class="text-brand-800 font-semibold text-2xl mx-2">{{ @clicks_user }}</span> times.</Typography.Title>
+        </div>
     </main>
     <footer class="bg-dark-700">
       <div class="grid grid-cols-3 gap-8 py-2 max-w-3xl container mx-auto">
@@ -106,5 +142,42 @@ defmodule SupabaseSurfaceDemoWeb.PageLive do
     </footer>
     </div>
     """
+  end
+
+  @impl true
+  def handle_event("increment", _, socket) do
+    UserClicks.create_click(socket.assigns.user["id"])
+    {:noreply, socket}
+  end
+
+  @impl true
+  def handle_event(
+        "INSERT",
+        %{"record" => %{"id" => count, "user_id" => user_id}, "table" => "user_clicks"},
+        socket
+      ) do
+    socket =
+      if user_id == socket.assigns.user["id"] do
+        update(socket, :clicks_user, fn clicks -> clicks + 1 end)
+      else
+        socket
+      end
+
+    {:noreply, assign(socket, clicks_total: String.to_integer(count))}
+  end
+
+  @impl true
+  def handle_event(
+        "UPDATE",
+        %{"record" => record, "table" => "profiles"},
+        socket
+      ) do
+    profile =
+      Jason.encode!(record)
+      |> Jason.decode!(keys: :atoms)
+
+    profile = Map.merge(%SupabaseSurfaceDemo.Profile{}, profile)
+
+    {:noreply, assign(socket, profile: profile)}
   end
 end

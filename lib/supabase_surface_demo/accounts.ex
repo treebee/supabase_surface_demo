@@ -6,10 +6,22 @@ defmodule SupabaseSurfaceDemo.Accounts do
     user
   end
 
-  def get_profile!(access_token, user_id) do
-    case get_profile(access_token, user_id) do
-      {:ok, profile} -> profile
-      {:error, error} -> raise error
+  def get_profile!(access_token, user_id, options \\ []) do
+    create = Keyword.get(options, :create, false)
+
+    with {{:ok, profile}, _create} <- {get_profile(access_token, user_id), create} do
+      profile
+    else
+      {{:error, :no_result}, true} ->
+        user = get_user!(access_token)
+        {:ok, profile} = create_profile(access_token, user)
+        profile
+
+      {{:error, :no_result}, false} ->
+        raise "No profile found with user_id #{user_id}"
+
+      {{:error, error}, _create} ->
+        raise error
     end
   end
 
@@ -19,7 +31,7 @@ defmodule SupabaseSurfaceDemo.Accounts do
          |> Postgrestex.eq("user_id", user_id)
          |> Postgrestex.call()
          |> Supabase.json(keys: :atoms) do
-      %{status: 200, body: [profile]} -> {:ok, profile}
+      %{status: 200, body: [profile]} -> {:ok, Map.merge(%Profile{}, profile)}
       %{status: 200, body: []} -> {:error, :no_result}
       %{body: %{"error" => error}} -> {:error, error}
     end
@@ -43,7 +55,7 @@ defmodule SupabaseSurfaceDemo.Accounts do
          |> Postgrestex.update_headers(%{"Prefer" => "return=representation"})
          |> Postgrestex.call()
          |> Supabase.json(keys: :atoms) do
-      %{status: 201, body: [profile]} -> {:ok, profile}
+      %{status: 201, body: [profile]} -> {:ok, Map.merge(%Profile{}, profile)}
       _error -> {:error, "Couldn't create profile"}
     end
   end
@@ -58,7 +70,7 @@ defmodule SupabaseSurfaceDemo.Accounts do
          |> Postgrestex.update_headers(%{"Prefer" => "return=representation"})
          |> Postgrestex.call()
          |> Supabase.json(keys: :atoms) do
-      %{body: [profile]} -> {:ok, profile}
+      %{body: [profile]} -> {:ok, Map.merge(%Profile{}, profile)}
       _ -> {:error, "Error updating profile"}
     end
   end

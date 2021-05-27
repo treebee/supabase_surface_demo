@@ -18,14 +18,15 @@ import topbar from "topbar";
 import { LiveSocket } from "phoenix_live_view";
 import "supabase_surface";
 
+import Realtime from "./realtime";
 import hooks from "./_hooks";
-console.log(hooks);
+
 let csrfToken = document
   .querySelector("meta[name='csrf-token']")
   .getAttribute("content");
 let liveSocket = new LiveSocket("/live", Socket, {
   params: { _csrf_token: csrfToken },
-  hooks: { ...hooks },
+  hooks: { ...hooks, Realtime },
 });
 
 // Show progress bar on live navigation and form submits

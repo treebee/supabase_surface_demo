@@ -53,7 +53,7 @@ defmodule SupabaseSurfaceDemo.MixProject do
       # {:supabase_surface, path: "../supabase-surface"},
       {:gotrue, "~> 0.2.0", override: true},
       {:heroicons, "~> 0.2.2"},
-      {:joken, "~> 2.0"}
+      {:joken, "~> 2.0"},
     ]
   end
 
