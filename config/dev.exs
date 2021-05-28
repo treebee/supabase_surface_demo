@@ -60,7 +60,7 @@ config :supabase_surface_demo, SupabaseSurfaceDemoWeb.Endpoint,
       ~r"lib/supabase_surface_demo_web/live/.*(sface)$",
       ~r"lib/supabase_surface_demo_web/live/(components)/.*(ex|js)$",
       ~r"priv/catalogue/(components)/.*(ex)$",
-      ~r"deps/supabase_surface/lib/components/.*(ex|js)$",
+      ~r"deps/supabase_surface/lib/supabase_surface/components/.*(ex|js)$",
       ~r"deps/supabase_surface/assets/js/.*(js)$",
       ~r"deps/supabase_surface/assets/css/.*(scss|css)$"
     ]

@@ -14,6 +14,7 @@ defmodule SupabaseSurfaceDemoWeb.LoginLive do
         magic_link={{ true }}
         providers={{ ["github", "google"] }}
         provider_redirect_url="http://localhost:4004/login"
+        password_login={{ true }}
         />
     </div>
     """
