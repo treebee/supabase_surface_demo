@@ -27,6 +27,13 @@ let csrfToken = document
 let liveSocket = new LiveSocket("/live", Socket, {
   params: { _csrf_token: csrfToken },
   hooks: { ...hooks, Realtime },
+  dom: {
+    onBeforeElUpdated(from, to) {
+      if (from.__x) {
+        window.Alpine.clone(from.__x, to);
+      }
+    },
+  },
 });
 
 // Show progress bar on live navigation and form submits
