@@ -2,13 +2,13 @@ defmodule SupabaseSurfaceDemoWeb.Router do
   use SupabaseSurfaceDemoWeb, :router
 
   pipeline :browser do
-    plug(:accepts, ["html"])
-    plug(:fetch_session)
-    plug(:fetch_live_flash)
-    plug(:put_root_layout, {SupabaseSurfaceDemoWeb.LayoutView, :root})
-    plug(:protect_from_forgery)
-    plug(:put_secure_browser_headers)
-    plug SupabaseSurfaceWeb.Plugs.Session
+    plug :accepts, ["html"]
+    plug :fetch_session
+    plug :fetch_live_flash
+    plug :put_root_layout, {SupabaseSurfaceDemoWeb.LayoutView, :root}
+    plug :protect_from_forgery
+    plug :put_secure_browser_headers
+    plug SupabaseSurface.Plugs.Session
   end
 
   pipeline :api do

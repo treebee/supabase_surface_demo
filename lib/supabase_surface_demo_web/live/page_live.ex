@@ -70,7 +70,7 @@ defmodule SupabaseSurfaceDemoWeb.PageLive do
           <LivePatch to="/">
             <p class="text-brand-800 font-semibold text-2xl">Surface Supabase Demo</p>
           </LivePatch>
-          <Dropdown id="user-menu"
+          <Dropdown
             transition={{
               enter: "transition ease-out origin-top-right duration-300",
               enter_start: "opacity-0 transform scale-90",
